@@ -1,14 +1,5 @@
-import './App.css'
+import MainPage from "./pages/Main";
 
-import { Button } from "@/components/ui/button"
+const App = () => <MainPage />;
 
-function App() {
-
-  return (
-    <>
-      <Button>Click me</Button>
-    </>
-  )
-}
-
-export default App
+export default App;
