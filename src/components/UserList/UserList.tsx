@@ -17,7 +17,16 @@ const UserList = ({ data }: { data: IUsuarios[] }) => {
 
   const { mutate } = useDeleteUserMutation();
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: number | undefined) => {
+
+    if (id === undefined) {
+      toast({
+        title: "Erro",
+        description: "ID não encontrado",
+      });
+      return;
+    }
+
     mutate(id, {
       onSuccess: () => {
         toast({
