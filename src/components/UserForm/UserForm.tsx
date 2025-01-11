@@ -5,7 +5,6 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -87,19 +86,18 @@ const UserForm = ({
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    if (cepValue.length >= 8) {
-      handleValidCEP();
-    }
-  }, [data, cepValue, form]);
-
-  // Atualize o estado com o usuário selecionado para edição
-  useEffect(() => {
     if (userToEdit) {
       form.reset(userToEdit);
       setTxtBtnSalvar("Atualizar");
       setIsOpen(true);
     }
   }, [userToEdit]);
+
+  useEffect(() => {
+    if (cepValue.length >= 8) {
+      handleValidCEP();
+    }
+  }, [data, cepValue, form]);
 
   // Função para buscar endereço pelo CEP
   const handleValidCEP = async () => {
@@ -152,12 +150,15 @@ const UserForm = ({
 
         setTxtBtnSalvar("Salvar");
         setLoadingSalvar(false);
-        // fechar tela e atualiza lista
-        setIsOpen(false);
+        setIsOpen(!isOpen);
       },
       onError: () => {
+        toast({
+          title:
+            "Erro ao " + (userToEdit ? "atualizar" : "salvar") + " o usuário",
+          description: "",
+        });
         form.reset();
-
         setTxtBtnSalvar("Salvar");
         setLoadingSalvar(false);
       },
@@ -167,16 +168,15 @@ const UserForm = ({
   return (
     <Sheet key="right" open={isOpen} onOpenChange={setIsOpen}>
       {!isEdit ? (
-        <SheetTrigger asChild>
-          <Button
-            title="Novo"
-            style={{
-              marginTop: "5px",
-            }}
-          >
-            Novo
-          </Button>
-        </SheetTrigger>
+        <Button
+          title="Novo"
+          style={{
+            marginTop: "5px",
+          }}
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          Novo
+        </Button>
       ) : (
         <></>
       )}
