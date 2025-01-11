@@ -16,7 +16,15 @@ const MainPage = () => {
       {error instanceof Error ? (
         <div>Erro: {error.message}</div>
       ) : (
-        <>{isLoading ? <p>loading...</p> : <UserList data={data ?? []} />}</>
+        <>
+          {isLoading ? (
+            <div className="w-[791px] h-64 flex justify-center items-center">
+              <p>Carregando...</p>
+            </div>
+          ) : (
+            <UserList data={data ?? []} />
+          )}
+        </>
       )}
     </div>
   );
