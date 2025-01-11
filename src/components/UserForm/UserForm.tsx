@@ -91,7 +91,7 @@ const UserForm = ({
       setTxtBtnSalvar("Atualizar");
       setIsOpen(true);
     }
-  }, [userToEdit]);
+  }, [form, userToEdit]);
 
   useEffect(() => {
     if (cepValue.length >= 8) {
@@ -193,7 +193,7 @@ const UserForm = ({
             <form onSubmit={form.handleSubmit(onSubmit)}>
               {/* NOME */}
               <FormField
-                className="grid grid-cols-4 items-center gap-4"
+                //className="grid grid-cols-4 items-center gap-4"
                 control={form.control}
                 name="nome"
                 render={({ field }) => (
@@ -209,7 +209,7 @@ const UserForm = ({
 
               {/* CPF */}
               <FormField
-                className="grid grid-cols-4 items-center gap-4"
+               // className="grid grid-cols-4 items-center gap-4"
                 control={form.control}
                 name="cpf"
                 render={({ field }) => (
@@ -248,7 +248,7 @@ const UserForm = ({
 
               {/* CEP */}
               <FormField
-                className="grid grid-cols-4 items-center gap-4"
+                //className="grid grid-cols-4 items-center gap-4"
                 control={form.control}
                 name="cep"
                 render={({ field }) => (
@@ -273,7 +273,7 @@ const UserForm = ({
 
               {/* LOGRADOURO */}
               <FormField
-                className="grid grid-cols-4 items-center gap-4"
+                //className="grid grid-cols-4 items-center gap-4"
                 control={form.control}
                 name="logradouro"
                 render={({ field }) => (
@@ -289,7 +289,7 @@ const UserForm = ({
 
               {/* BAIRRO */}
               <FormField
-                className="grid grid-cols-4 items-center gap-4"
+               // className="grid grid-cols-4 items-center gap-4"
                 control={form.control}
                 name="bairro"
                 render={({ field }) => (
@@ -305,7 +305,7 @@ const UserForm = ({
 
               {/* CIDADE */}
               <FormField
-                className="grid grid-cols-4 items-center gap-4"
+               // className="grid grid-cols-4 items-center gap-4"
                 control={form.control}
                 name="cidade"
                 render={({ field }) => (
@@ -321,7 +321,7 @@ const UserForm = ({
 
               {/* ESTADO */}
               <FormField
-                className="grid grid-cols-4 items-center gap-4"
+                //className="grid grid-cols-4 items-center gap-4"
                 control={form.control}
                 name="estado"
                 render={({ field }) => (

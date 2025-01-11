@@ -25,7 +25,7 @@ const UserList = ({ data }: { data: IUsuarios[] }) => {
           description: "",
         });
       },
-      onError: (error: any) => {
+      onError: (error: unknown) => {
         console.error("Erro ao apagar usuário:", error);
         toast({
           title: "Erro ao apagar o usuário",
