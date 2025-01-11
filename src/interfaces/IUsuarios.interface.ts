@@ -1,5 +1,5 @@
 export default interface IUsuarios {
-  id: number;
+  id?: number;
   nome: string;
   cpf: string;
   cep: string;
