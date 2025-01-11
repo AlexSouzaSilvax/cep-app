@@ -13,6 +13,7 @@ import { z } from "zod";
 
 import { useUsersMutation } from "@/api/mutations/useUserMutation";
 import { useCepQuery } from "@/api/queries/useCepQuery";
+import { useCheckCpfQuery } from "@/api/queries/useCheckCpfQuery";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -71,8 +72,11 @@ const UserForm = ({
   });
 
   const cepValue = form.watch("cep"); // Monitorando o valor do CEP
+  const cpfValue = form.watch("cpf"); // Monitorando o CPF digitado
 
   const { data } = useCepQuery(cepValue);
+  const { data: isCpfTaken, isLoading: isCheckingCpf } =
+    useCheckCpfQuery(cpfValue);
 
   const [txtBtnSalvar, setTxtBtnSalvar] = useState("Salvar");
 
@@ -109,7 +113,28 @@ const UserForm = ({
     }
   };
 
+  const handleCpfValidation = () => {
+    if (!isEdit) {
+      if (isCpfTaken) {
+        toast({
+          title: "Erro",
+          description: "O CPF já está registrado",
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
   function onSubmit(data: z.infer<typeof FormSchema>) {
+    if (isCpfTaken) {
+      toast({
+        title: "Erro",
+        description: "O CPF já está registrado",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setTxtBtnSalvar("Carregando...");
     setLoadingSalvar(true);
 
@@ -200,10 +225,23 @@ const UserForm = ({
                           input.value = input.value.replace(/\D/g, "");
                           field.onChange(input.value);
                         }}
+                        onBlur={handleCpfValidation}
                         disabled={isEdit}
                       />
                     </FormControl>
-                    <FormMessage />
+                    {!isEdit ? (
+                      <>
+                        {isCheckingCpf ? (
+                          <FormMessage>Verificando CPF...</FormMessage>
+                        ) : isCpfTaken ? (
+                          <FormMessage>CPF já está registrado</FormMessage>
+                        ) : (
+                          <FormMessage />
+                        )}{" "}
+                      </>
+                    ) : (
+                      <></>
+                    )}
                   </FormItem>
                 )}
               />
