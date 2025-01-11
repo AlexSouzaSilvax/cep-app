@@ -41,10 +41,12 @@ const UserList = ({ data }: { data: IUsuarios[] }) => {
       <Table className="w-full table-auto">
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px] sm:w-auto">Nome</TableHead>
-            <TableHead className="w-[120px] sm:w-auto">CPF</TableHead>
-            <TableHead className="hidden sm:table-cell">Endereço</TableHead>
-            <TableHead className="w-[100px] sm:w-auto">Ações</TableHead>
+            <TableHead className="sm:w-auto">Nome</TableHead>
+            <TableHead className="sm:w-auto">CPF</TableHead>
+            <TableHead className="hidden sm:table-cell w-[383px] break-words whitespace-normal">
+              Endereço
+            </TableHead>
+            <TableHead className="sm:w-auto">Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
