@@ -126,20 +126,20 @@ const UserForm = ({
   };
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    if (isCpfTaken) {
-      toast({
-        title: "Erro",
-        description: "O CPF já está registrado",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setTxtBtnSalvar("Carregando...");
     setLoadingSalvar(true);
 
     if (userToEdit) {
       data = { ...data, id: userToEdit.id };
+    } else {
+      if (isCpfTaken) {
+        toast({
+          title: "Erro",
+          description: "O CPF já está registrado",
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     mutate(data, {
