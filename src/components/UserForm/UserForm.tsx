@@ -28,7 +28,7 @@ import IUsuarios from "@/interfaces/IUsuarios.interface";
 import { useEffect, useState } from "react";
 
 const FormSchema = z.object({
-  id: z.number().optional(),
+  id: z.number(),
   nome: z.string().nonempty("NOME é obrigatório"),
   cpf: z
     .string()
