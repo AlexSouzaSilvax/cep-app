@@ -1,11 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 
+import api from "../axiosInstance";
+
 const checkCpf = async (cpf: string): Promise<boolean> => {
-  const res = await fetch(`http://localhost:8080/api/usuarios/check-cpf/${cpf}`);
-  if (!res.ok) {
-    throw new Error("Erro ao verificar CPF");
+  try {
+    const res = await api.get(`usuarios/check-cpf/${cpf}`);
+    return res.data;
+  } catch (error) {
+    throw new Error("Erro ao verificar cpf");
   }
-  return res.json();
 };
 
 export const useCheckCpfQuery = (cpf: string) => {

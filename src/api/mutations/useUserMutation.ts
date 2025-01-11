@@ -1,18 +1,15 @@
 import IUsuarios from "@/interfaces/IUsuarios.interface";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+import api from "../axiosInstance";
+
 const createUser = async (user: IUsuarios): Promise<IUsuarios> => {
-  const res = await fetch("http://localhost:8080/api/usuarios/create", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(user),
-  });
-  if (!res.ok) {
-    throw new Error("Erro ao criar usuário");
+  try {
+    const res = await api.post("usuarios/create", user);
+    return res.data;
+  } catch (error) {
+    throw new Error("Erro ao criar usuário ");
   }
-  return res.json();
 };
 
 export const useUsersMutation = () => {

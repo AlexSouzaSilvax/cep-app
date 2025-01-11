@@ -1,12 +1,14 @@
 import IUsuarios from "@/interfaces/IUsuarios.interface";
 import { useQuery } from "@tanstack/react-query";
+import api from "../axiosInstance";
 
 const fetchUsers = async (): Promise<IUsuarios[]> => {
-  const res = await fetch("http://localhost:8080/api/usuarios/find-all");
-  if (!res.ok) {
-    throw new Error("Erro ao buscar os dados");
+  try {
+    const res = await api.get("usuarios/find-all");
+    return res.data;
+  } catch (error) {
+    throw new Error("Erro ao buscar usuarios");
   }
-  return res.json();
 };
 
 export const useUsersQuery = () => {
