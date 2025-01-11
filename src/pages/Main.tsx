@@ -10,7 +10,7 @@ const MainPage = () => {
     <div className="w-full min-w-[320px] max-w-[850px] mx-auto p-4">
       <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 sm:space-x-4">
         <p className="text-xl">Gerenciamento de Usuários</p>
-        <UserForm />
+        <UserForm userToEdit={undefined} isEdit={false} />
       </div>
       <Separator className="my-4" />
       {error instanceof Error ? (

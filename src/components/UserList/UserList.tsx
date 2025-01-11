@@ -17,7 +17,7 @@ const UserList = ({ data }: { data: IUsuarios[] }) => {
 
   const { mutate } = useDeleteUserMutation();
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id: number) => {
     mutate(id, {
       onSuccess: () => {
         toast({
