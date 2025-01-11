@@ -9,21 +9,15 @@ import {
 import { toast } from "@/hooks/use-toast";
 import IUsuarios from "@/interfaces/IUsuarios.interface";
 import { useState } from "react";
-import { useUsersQuery } from "../../api/queries/useUsersQuery";
 import UserForm from "../UserForm/UserForm";
 import UserItem from "./UserItem";
 
-const UserList = () => {
-  const { data, isLoading, error } = useUsersQuery();
+const UserList = ({ data }: { data: IUsuarios[] }) => {
   const [userToEdit, setUserToEdit] = useState<IUsuarios>();
 
   const { mutate } = useDeleteUserMutation();
 
-  if (isLoading) return <div>Carregando...</div>;
-  if (error instanceof Error) return <div>Erro: {error.message}</div>;
-
   const handleDelete = (id: string) => {
-
     mutate(id, {
       onSuccess: () => {
         toast({
@@ -40,13 +34,13 @@ const UserList = () => {
   return (
     <>
       <UserForm userToEdit={userToEdit} isEdit={true} />
-      <Table>
+      <Table className="w-full table-auto">
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Nome</TableHead>
-            <TableHead>CPF</TableHead>
-            <TableHead>Endereço</TableHead>
-            <TableHead>Ações</TableHead>
+            <TableHead className="w-[100px] sm:w-auto">Nome</TableHead>
+            <TableHead className="w-[120px] sm:w-auto">CPF</TableHead>
+            <TableHead className="hidden sm:table-cell">Endereço</TableHead>
+            <TableHead className="w-[100px] sm:w-auto">Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
