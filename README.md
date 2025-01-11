@@ -1,50 +1,62 @@
-# React + TypeScript + Vite
+# React + TypeScript + Vite + Shadcn + TailWind + React-Query
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# APP Gerenciamento de Usuários
+Consulta de CEP e Gerenciamento de Usuários
 
-Currently, two official plugins are available:
+Desafio técnico para vaga FullStack Jr na Solution TI.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tecnologias Utilizadas
 
-## Expanding the ESLint configuration
+- **React**
+- **TypeScript**
+- **Vite**
+- **TailWind**
+- **ShadCN**
+- **React-Query**
+- **Render**
+- **Trello**
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Hospedagem
 
-- Configure the top-level `parserOptions` property like this:
+- **APP**: [Render](https://api-cep-6e3z.onrender.com)
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Metodologia de Desenvolvimento
+
+Estamos utilizando metodologias ágeis para o desenvolvimento dessa api, especificamente o Kanban. Você pode acompanhar o progresso do projeto no nosso quadro do Trello: [Solution Trello Board](https://trello.com/b/3O8SKX6c/solution).
+
+## Funcionalidades
+
+- Lista de Usuários.
+- Cadastro de Usuários com endereços.
+- Busca de CEP na base de dados ViaCEP (pela integração da nossa API).
+- Gerenciamento de Usuários.
+
+
+## Executar o Projeto
+
+```bash
+    npm install
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+```bash
+    npm run dev
 ```
+
+## Deploy no Render
+
+ - Acessar painel dashboard do [Render](https://dashboard.render.com/web/srv-ctvjpulds78s73emk8gg/logs) 
+ - Manual Deploy --> Deploy latest reference
+
+## Contribuição
+
+Se você deseja contribuir com este projeto, sinta-se à vontade para abrir um pull request ou relatar um problema.
+
+## Contato
+
+Se você tiver alguma dúvida ou sugestão, sinta-se à vontade para entrar em contato.
+
+Email alexsouzasilvax@gmail.com
+
+---
+
+_Este projeto foi criado para apresentar como teste técnico à uma vaga de desenvolvedor fullsatck jr._
