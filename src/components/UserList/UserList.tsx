@@ -1,3 +1,4 @@
+import { useDeleteUserMutation } from "@/api/mutations/useDeleteUserMutation";
 import {
   Table,
   TableBody,
@@ -5,6 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { toast } from "@/hooks/use-toast";
 import IUsuarios from "@/interfaces/IUsuarios.interface";
 import { useState } from "react";
 import { useUsersQuery } from "../../api/queries/useUsersQuery";
@@ -15,8 +17,25 @@ const UserList = () => {
   const { data, isLoading, error } = useUsersQuery();
   const [userToEdit, setUserToEdit] = useState<IUsuarios>();
 
+  const { mutate } = useDeleteUserMutation();
+
   if (isLoading) return <div>Carregando...</div>;
   if (error instanceof Error) return <div>Erro: {error.message}</div>;
+
+  const handleDelete = (id: string) => {
+
+    mutate(id, {
+      onSuccess: () => {
+        toast({
+          title: "Usuário apagado com sucesso",
+          description: "",
+        });
+      },
+      onError: (error: any) => {
+        console.error("Erro ao apagar usuário:", error);
+      },
+    });
+  };
 
   return (
     <>
@@ -35,11 +54,8 @@ const UserList = () => {
             <UserItem
               key={usuario.id}
               usuario={usuario}
-              onEdit={() => {
-                setUserToEdit(usuario);
-                console.log(JSON.stringify(usuario));
-              }}
-              onDelete={() => alert("delete")}
+              onEdit={() => setUserToEdit(usuario)}
+              onDelete={() => handleDelete(usuario.id)}
             />
           ))}
         </TableBody>

@@ -28,10 +28,7 @@ const UserItem = ({
         </Button>
       </TableCell>
       <TableCell>
-        <Button onClick={onDelete} title="Apagar">
-          Apagar
-        </Button>
-        <ApagarUsuarioDialog />
+        <ApagarUsuarioDialog onDelete={onDelete} />
       </TableCell>
     </TableRow>
   );
