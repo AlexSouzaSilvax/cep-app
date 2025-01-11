@@ -18,7 +18,7 @@ Desafio técnico para vaga FullStack Jr na Solution TI.
 
 ## Hospedagem
 
-- **APP**: [Render](https://api-cep-6e3z.onrender.com)
+- **APP**: [Render](https://cep-app-1.onrender.com/)
 
 ## Metodologia de Desenvolvimento
 
@@ -44,8 +44,8 @@ Estamos utilizando metodologias ágeis para o desenvolvimento dessa api, especif
 
 ## Deploy no Render
 
- - Acessar painel dashboard do [Render](https://dashboard.render.com/web/srv-ctvjpulds78s73emk8gg/logs) 
- - Manual Deploy --> Deploy latest reference
+ - Acessar painel dashboard do [Render](https://dashboard.render.com/web/srv-ctvjpulds78s73emk8gg/logs)
+ - New Static Site --> Deploy
 
 ## Contribuição
 
