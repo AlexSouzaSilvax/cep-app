@@ -27,7 +27,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 import IUsuarios from "@/interfaces/IUsuarios.interface";
 import { formatarCPF } from "@/services/formatarCPF";
-import { isMobile } from "@/services/isMobile";
+import { height, isMobile } from "@/services/isMobile";
 import { isValidCPF } from "@/services/validarCPF";
 import { useEffect, useState } from "react";
 
@@ -244,7 +244,7 @@ const UserForm = ({
 
       <SheetContent
         className={`flex flex-col overflow-y-auto ${
-          isMobile ? "h-screen w-screen" : "max-h-screen"
+          isMobile ? `h-${height} w-screen` : "max-h-screen"
         }`}
         side={isMobile ? "top" : "right"}
         onCloseAutoFocus={() => {
