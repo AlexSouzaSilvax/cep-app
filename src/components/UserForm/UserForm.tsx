@@ -41,10 +41,10 @@ const FormSchema = z.object({
     .refine(isValidCPF, { message: "CPF está inválido" }),
   cep: z
     .string()
+    .nonempty("CEP é obrigatório")
     .min(8, {
       message: "CEP deve conter 8 dígitos.",
     })
-    .nonempty("CEP é obrigatório")
     .regex(
       /^(?!0{8})([0-9]{5}-?[0-9]{3})$/,
       "CEP inválido. Use apenas os números."
@@ -86,7 +86,7 @@ const UserForm = ({
     isSuccess: isSuccessCep,
     isError: isErrorCep,
     isLoading: isLoadingCep,
-  } = useCepQuery(cepValue, form.getValues('logradouro'));
+  } = useCepQuery(cepValue, form.getValues("logradouro"));
 
   const { data: isCpfTaken, isLoading: isCheckingCpf } =
     useCheckCpfQuery(cpfValue);
@@ -99,6 +99,8 @@ const UserForm = ({
 
   const [isOpen, setIsOpen] = useState(false);
 
+  const [isCepEncontrado, setIsCepEncontrado] = useState(false);
+
   useEffect(() => {
     if (userToEdit) {
       form.reset(userToEdit);
@@ -108,10 +110,11 @@ const UserForm = ({
   }, [form, userToEdit]);
 
   useEffect(() => {
+    setIsCepEncontrado(false);
     if (isSuccessCep) {
       handleValidCEP();
     } else if (isErrorCep) {
-      callToast("CEP", "Cep não encontrado.", "destructive");
+      setIsCepEncontrado(!isCepEncontrado);
     }
     if (cepValue.length < 8) {
       limpaEnderecoForm();
@@ -125,7 +128,7 @@ const UserForm = ({
       form.setValue("cidade", endereco.localidade);
       form.setValue("estado", endereco.estado);
     } else {
-      callToast("CEP", "CEP não encontrado.", "destructive");
+      setIsCepEncontrado(!isCepEncontrado);
       changeBtnSalvar();
       limpaEnderecoForm();
     }
@@ -222,10 +225,14 @@ const UserForm = ({
         <></>
       )}
 
-      <SheetContent side={"right"} onCloseAutoFocus={() => {
-        form.reset();
-        onCloseForm();
-      }}>
+      <SheetContent
+        side={"right"}
+        className="overflow-y-auto max-h-screen"
+        onCloseAutoFocus={() => {
+          form.reset();
+          onCloseForm();
+        }}
+      >
         <SheetClose asChild></SheetClose>
 
         <SheetHeader>
@@ -245,7 +252,11 @@ const UserForm = ({
                   <FormItem className="marginTopItemForm">
                     <FormLabel>Nome *</FormLabel>
                     <FormControl>
-                      <Input placeholder="seu nome" {...field} />
+                      <Input
+                        placeholder="seu nome"
+                        {...field}
+                        autoFocus={!isEdit}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -313,6 +324,8 @@ const UserForm = ({
                     <>
                       {isLoadingCep ? (
                         <FormMessage>Consultando CEP...</FormMessage>
+                      ) : isCepEncontrado ? (
+                        <FormMessage>CEP não encontrado.</FormMessage>
                       ) : (
                         <FormMessage />
                       )}
