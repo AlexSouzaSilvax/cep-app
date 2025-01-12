@@ -222,13 +222,10 @@ const UserForm = ({
         <></>
       )}
 
-      <SheetContent
-        side={"right"}
-        onCloseAutoFocus={() => {
-          form.reset();
-          onCloseForm();
-        }}
-      >
+      <SheetContent side={"right"} onCloseAutoFocus={() => {
+        form.reset();
+        onCloseForm();
+      }}>
         <SheetClose asChild></SheetClose>
 
         <SheetHeader>
