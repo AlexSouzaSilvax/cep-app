@@ -1,5 +1,6 @@
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
@@ -25,6 +26,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 import IUsuarios from "@/interfaces/IUsuarios.interface";
+import { formatarCPF } from "@/services/formatarCPF";
+import { isValidCPF } from "@/services/validarCPF";
 import { useEffect, useState } from "react";
 
 const FormSchema = z.object({
@@ -32,17 +35,20 @@ const FormSchema = z.object({
   nome: z.string().nonempty("NOME é obrigatório"),
   cpf: z
     .string()
-    .min(1, { message: "CPF é obrigatório" })
-    .max(11, { message: "O CPF deve ter até 11 dígitos" })
-    .regex(/^\d*$/, { message: "CPF deve conter apenas números" }),
+    .nonempty("CPF é obrigatório")
+    .min(11, { message: "CPF deve conter 11 dígitos" })
+    .regex(/^\d*$/, { message: "CPF deve conter apenas números" })
+    .refine(isValidCPF, { message: "CPF está inválido" }),
   cep: z
     .string()
-    .min(1, { message: "CEP é obrigatório" })
-    .max(8, {
-      message: "CEP inválido.",
+    .min(8, {
+      message: "CEP deve conter 8 dígitos.",
     })
     .nonempty("CEP é obrigatório")
-    .regex(/^\d{5}-?\d{3}$/, "CEP inválido. Use apenas os números."),
+    .regex(
+      /^(?!0{8})([0-9]{5}-?[0-9]{3})$/,
+      "CEP inválido. Use apenas os números."
+    ),
   logradouro: z.string().optional(),
   bairro: z.string().optional(),
   cidade: z.string().optional(),
@@ -52,9 +58,11 @@ const FormSchema = z.object({
 const UserForm = ({
   userToEdit,
   isEdit,
+  onCloseForm,
 }: {
   userToEdit?: IUsuarios;
   isEdit: boolean;
+  onCloseForm: () => void;
 }) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -73,7 +81,13 @@ const UserForm = ({
   const cepValue = form.watch("cep"); // Monitorando o valor do CEP
   const cpfValue = form.watch("cpf"); // Monitorando o CPF digitado
 
-  const { data } = useCepQuery(cepValue);
+  const {
+    data: endereco,
+    isSuccess: isSuccessCep,
+    isError: isErrorCep,
+    isLoading: isLoadingCep,
+  } = useCepQuery(cepValue);
+
   const { data: isCpfTaken, isLoading: isCheckingCpf } =
     useCheckCpfQuery(cpfValue);
 
@@ -94,76 +108,103 @@ const UserForm = ({
   }, [form, userToEdit]);
 
   useEffect(() => {
-    if (cepValue.length >= 8) {
+    if (isSuccessCep) {
       handleValidCEP();
+    } else if (isErrorCep) {
+      callToast("CEP", "Cep não encontrado.", "destructive");
     }
-  }, [data, cepValue, form]);
+    if (cepValue.length < 8) {
+      limpaEnderecoForm();
+    }
+  }, [isSuccessCep, isErrorCep, endereco, cepValue, form]);
 
-  // Função para buscar endereço pelo CEP
-  const handleValidCEP = async () => {
-    if (data) {
-      form.setValue("logradouro", data.logradouro);
-      form.setValue("bairro", data.bairro);
-      form.setValue("cidade", data.localidade);
-      form.setValue("estado", data.estado);
+  const handleValidCEP = () => {
+    if (endereco?.cep) {
+      form.setValue("logradouro", endereco.logradouro);
+      form.setValue("bairro", endereco.bairro);
+      form.setValue("cidade", endereco.localidade);
+      form.setValue("estado", endereco.estado);
     } else {
-      console.error("CEP não encontrado.");
+      callToast("CEP", "CEP não encontrado.", "destructive");
+      changeBtnSalvar();
+      limpaEnderecoForm();
     }
   };
 
   const handleCpfValidation = () => {
     if (!isEdit) {
       if (isCpfTaken) {
-        toast({
-          title: "Erro",
-          description: "O CPF já está registrado",
-          variant: "destructive",
-        });
+        callToast("CPF já está registrado.", "", "destructive");
       }
     }
   };
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  function onSubmit(endereco: z.infer<typeof FormSchema>) {
     setTxtBtnSalvar("Carregando...");
     setLoadingSalvar(true);
 
     if (userToEdit) {
-      data = { ...data, id: userToEdit.id };
+      endereco = { ...endereco, id: userToEdit.id };
     } else {
       if (isCpfTaken) {
-        toast({
-          title: "Erro",
-          description: "O CPF já está registrado",
-          variant: "destructive",
-        });
+        callToast("CPF", "O CPF já está registrado.", "destructive");
+        changeBtnSalvar();
+        return;
+      }
+      if (!endereco) {
+        callToast("CEP", "CEP está inválido.", "destructive");
+        changeBtnSalvar();
         return;
       }
     }
 
-    mutate(data, {
+    mutate(endereco, {
       onSuccess: () => {
-        toast({
-          title: userToEdit ? "Atualizado com sucesso" : "Salvo com sucesso",
-          description: "",
-        });
+        callToast(
+          (userToEdit ? "Atualizado" : "Salvo") + " com sucesso",
+          endereco.nome + " " + formatarCPF(endereco.cpf),
+          "default"
+        );  
         form.reset();
-
-        setTxtBtnSalvar("Salvar");
-        setLoadingSalvar(false);
+        changeBtnSalvar();
         setIsOpen(!isOpen);
       },
       onError: () => {
-        toast({
-          title:
-            "Erro ao " + (userToEdit ? "atualizar" : "salvar") + " o usuário",
-          description: "",
-        });
+        callToast(
+          "Usuário",
+          "Problema ao " + (userToEdit ? "atualizar" : "salvar") + " o usuário",
+          "destructive"
+        );
         form.reset();
-        setTxtBtnSalvar("Salvar");
-        setLoadingSalvar(false);
+        changeBtnSalvar();
+        setIsOpen(!isOpen);
       },
     });
   }
+
+  const changeBtnSalvar = () => {
+    setTxtBtnSalvar("Salvar");
+    setLoadingSalvar(false);
+  };
+
+  const callToast = (
+    title: string,
+    description: string,
+    variant: "default" | "destructive" | null | undefined
+  ) => {
+    toast({
+      title: title,
+      description: description,
+      variant: variant,
+    });
+  };
+
+  const limpaEnderecoForm = () => {
+    form.setValue("logradouro", "");
+    form.setValue("bairro", "");
+    form.setValue("cidade", "");
+    form.setValue("estado", "");
+  };
 
   return (
     <Sheet key="right" open={isOpen} onOpenChange={setIsOpen}>
@@ -181,7 +222,9 @@ const UserForm = ({
         <></>
       )}
 
-      <SheetContent side={"right"}>
+      <SheetContent side={"right"} onCloseAutoFocus={onCloseForm}>
+        <SheetClose asChild></SheetClose>
+
         <SheetHeader>
           <SheetTitle>Cadastro de Usuário</SheetTitle>
           <SheetDescription>Preencha o formulário</SheetDescription>
@@ -193,12 +236,11 @@ const UserForm = ({
             <form onSubmit={form.handleSubmit(onSubmit)}>
               {/* NOME */}
               <FormField
-                //className="grid grid-cols-4 items-center gap-4"
                 control={form.control}
                 name="nome"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nome</FormLabel>
+                  <FormItem className="marginTopItemForm">
+                    <FormLabel>Nome *</FormLabel>
                     <FormControl>
                       <Input placeholder="seu nome" {...field} />
                     </FormControl>
@@ -209,16 +251,16 @@ const UserForm = ({
 
               {/* CPF */}
               <FormField
-               // className="grid grid-cols-4 items-center gap-4"
                 control={form.control}
                 name="cpf"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>CPF</FormLabel>
+                  <FormItem className="marginTopItemForm">
+                    <FormLabel>CPF *</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="seu cpf"
                         {...field}
+                        value={isEdit ? formatarCPF(field.value) : field.value}
                         maxLength={11}
                         onInput={(e) => {
                           const input = e.target as HTMLInputElement;
@@ -248,12 +290,11 @@ const UserForm = ({
 
               {/* CEP */}
               <FormField
-                //className="grid grid-cols-4 items-center gap-4"
                 control={form.control}
                 name="cep"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>CEP</FormLabel>
+                  <FormItem className="marginTopItemForm">
+                    <FormLabel>CEP *</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="seu cep"
@@ -266,18 +307,23 @@ const UserForm = ({
                         }}
                       />
                     </FormControl>
-                    <FormMessage />
+                    <>
+                      {isLoadingCep ? (
+                        <FormMessage>Consultando CEP...</FormMessage>
+                      ) : (
+                        <FormMessage />
+                      )}
+                    </>
                   </FormItem>
                 )}
               />
 
               {/* LOGRADOURO */}
               <FormField
-                //className="grid grid-cols-4 items-center gap-4"
                 control={form.control}
                 name="logradouro"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="marginTopItemForm">
                     <FormLabel>Logradouro</FormLabel>
                     <FormControl>
                       <Input placeholder="" {...field} disabled={!isEdit} />
@@ -289,11 +335,10 @@ const UserForm = ({
 
               {/* BAIRRO */}
               <FormField
-               // className="grid grid-cols-4 items-center gap-4"
                 control={form.control}
                 name="bairro"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="marginTopItemForm">
                     <FormLabel>Bairro</FormLabel>
                     <FormControl>
                       <Input placeholder="" {...field} disabled={!isEdit} />
@@ -305,11 +350,10 @@ const UserForm = ({
 
               {/* CIDADE */}
               <FormField
-               // className="grid grid-cols-4 items-center gap-4"
                 control={form.control}
                 name="cidade"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="marginTopItemForm">
                     <FormLabel>Cidade</FormLabel>
                     <FormControl>
                       <Input placeholder="" {...field} disabled={!isEdit} />
@@ -321,11 +365,10 @@ const UserForm = ({
 
               {/* ESTADO */}
               <FormField
-                //className="grid grid-cols-4 items-center gap-4"
                 control={form.control}
                 name="estado"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="marginTopItemForm">
                     <FormLabel>Estado</FormLabel>
                     <FormControl>
                       <Input placeholder="" {...field} disabled={!isEdit} />
@@ -335,7 +378,7 @@ const UserForm = ({
                 )}
               />
 
-              <SheetFooter style={{ marginTop: "15px" }}>
+              <SheetFooter style={{ marginTop: "20px" }}>
                 <Button
                   style={{ width: "100%" }}
                   type="submit"
