@@ -115,12 +115,20 @@ const UserForm = ({
       handleValidCEP();
     } else if (isErrorCep) {
       setIsCepEncontrado(!isCepEncontrado);
-      callToast("CEP", "Cep não encontrado.", "destructive");
+      callToast("CEP", "CEP não encontrado.", "destructive");
     }
     if (cepValue.length < 8) {
       limpaEnderecoForm();
     }
   }, [isSuccessCep, isErrorCep, endereco, cepValue, form]);
+
+  useEffect(() => {
+    if (cpfValue.length == 11) {
+      if (!isValidCPF(cpfValue)) {
+        callToast("CPF", "CPF está inválido.", "destructive");
+      }
+    }
+  }, [endereco, cpfValue, form]);
 
   const handleValidCEP = () => {
     if (endereco?.cep) {
@@ -139,7 +147,7 @@ const UserForm = ({
   const handleCpfValidation = () => {
     if (!isEdit) {
       if (isCpfTaken) {
-        callToast("CPF já está registrado.", "", "destructive");
+        callToast("CPF", "CPF já está registrado.", "destructive");
       }
     }
   };
@@ -150,17 +158,16 @@ const UserForm = ({
 
     if (userToEdit) {
       endereco = { ...endereco, id: userToEdit.id };
-    } else {
-      if (isCpfTaken) {
-        callToast("CPF", "O CPF já está registrado.", "destructive");
-        changeBtnSalvar();
-        return;
-      }
-      if (!endereco) {
-        callToast("CEP", "CEP está inválido.", "destructive");
-        changeBtnSalvar();
-        return;
-      }
+    }
+    if (isCpfTaken) {
+      callToast("CPF", "O CPF já está registrado.", "destructive");
+      changeBtnSalvar();
+      return;
+    }
+    if (isCepEncontrado) {
+      callToast("CEP", "Por favor, informe um cep válido.", "destructive");
+      changeBtnSalvar();
+      return;
     }
 
     mutate(endereco, {

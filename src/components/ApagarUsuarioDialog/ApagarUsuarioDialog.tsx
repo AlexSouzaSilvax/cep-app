@@ -22,8 +22,11 @@ const ApagarUsuarioDialog = ({ onDelete }: { onDelete: () => void }) => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel style={{ color: "#1a1a1a" }}>Cancelar</AlertDialogCancel>
+          <AlertDialogCancel style={{ color: "#1a1a1a" }}>
+            Cancelar
+          </AlertDialogCancel>
           <AlertDialogAction
+            autoFocus={true}
             onClick={onDelete}
             style={{ backgroundColor: "red" }}
           >
