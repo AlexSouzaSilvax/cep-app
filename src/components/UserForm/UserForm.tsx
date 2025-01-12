@@ -30,6 +30,7 @@ import { formatarCPF } from "@/services/formatarCPF";
 import { isMobile } from "@/services/isMobile";
 import { isValidCPF } from "@/services/validarCPF";
 import { useEffect, useState } from "react";
+import { FaUser } from "react-icons/fa";
 
 const FormSchema = z.object({
   id: z.number().optional(),
@@ -254,8 +255,13 @@ const UserForm = ({
       >
         <SheetClose asChild></SheetClose>
 
-        <SheetHeader>
-          <SheetTitle>Cadastro de Usuário</SheetTitle>
+        <SheetHeader className="flex justify-center items-center">
+          <div className="flex flex-row">
+            <FaUser className="h-4 w-4 text-black-500" />
+            <SheetTitle className="text-xl ml-2 txtComum">
+              Cadastro de Usuário
+            </SheetTitle>
+          </div>
           <SheetDescription>Preencha o formulário</SheetDescription>
         </SheetHeader>
 

@@ -145,3 +145,7 @@ button:focus-visible {
 .marginTopScreen {
   margin-top: 220px;
 }
+
+.txtComum {
+  color: #444;
+}
