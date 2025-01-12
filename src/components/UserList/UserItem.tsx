@@ -17,7 +17,7 @@ const UserItem = ({
   return (
     <TableRow>
       <TableCell className="font-medium">{usuario.nome}</TableCell>
-      <TableCell>{formatarCPF(usuario.cpf)}</TableCell>
+      <TableCell className="whitespace-nowrap">{formatarCPF(usuario.cpf)}</TableCell>
       <TableCell className="hidden sm:table-cell break-words whitespace-normal">
         {usuario.logradouro}, {usuario.bairro} - {usuario.cidade},{" "}
         {usuario.estado} - {usuario.cep}
