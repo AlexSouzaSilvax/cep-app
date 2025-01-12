@@ -10,7 +10,7 @@ const MainPage = () => {
   const { data, isLoading, error } = useUsersQuery();
 
   return (
-    <div className="w-full max-w-[850px] mx-auto p-4">
+    <div className="w-full max-w-[850px] mx-auto p-4 overflow-y-auto">
       <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 sm:space-x-4">
         <p className="text-xl">Gerenciamento de Usuários</p>
         <UserForm
