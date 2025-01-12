@@ -115,6 +115,7 @@ const UserForm = ({
       handleValidCEP();
     } else if (isErrorCep) {
       setIsCepEncontrado(!isCepEncontrado);
+      callToast("CEP", "Cep não encontrado.", "destructive");
     }
     if (cepValue.length < 8) {
       limpaEnderecoForm();
@@ -129,6 +130,7 @@ const UserForm = ({
       form.setValue("estado", endereco.estado);
     } else {
       setIsCepEncontrado(!isCepEncontrado);
+      callToast("CEP", "CEP não encontrado.", "destructive");
       changeBtnSalvar();
       limpaEnderecoForm();
     }
@@ -227,7 +229,6 @@ const UserForm = ({
 
       <SheetContent
         side={"right"}
-        className="overflow-y-auto max-h-screen"
         onCloseAutoFocus={() => {
           form.reset();
           onCloseForm();
