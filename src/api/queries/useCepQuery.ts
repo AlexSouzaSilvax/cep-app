@@ -1,7 +1,7 @@
 import ICep from "@/interfaces/ICep.interface";
 import { useQuery } from "@tanstack/react-query";
 
-import api from '../axiosInstance';
+import api from "../axiosInstance";
 
 const getCep = async (cep: string): Promise<ICep> => {
   try {
@@ -12,11 +12,16 @@ const getCep = async (cep: string): Promise<ICep> => {
   }
 };
 
+export const useCepQuery = (cep: string, logradouro: string | undefined) => {
+  let existLogradouro = false;
 
-export const useCepQuery = (cep: string) => {
+  if (logradouro) {
+    existLogradouro = true;
+  }
+
   return useQuery<ICep, Error>({
     queryKey: ["cep", cep],
     queryFn: () => getCep(cep),
-    enabled: cep.length == 8,
+    enabled: cep.length == 8 && !existLogradouro,
   });
 };

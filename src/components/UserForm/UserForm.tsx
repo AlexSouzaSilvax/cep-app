@@ -86,7 +86,7 @@ const UserForm = ({
     isSuccess: isSuccessCep,
     isError: isErrorCep,
     isLoading: isLoadingCep,
-  } = useCepQuery(cepValue);
+  } = useCepQuery(cepValue, form.getValues('logradouro'));
 
   const { data: isCpfTaken, isLoading: isCheckingCpf } =
     useCheckCpfQuery(cpfValue);
