@@ -13,7 +13,9 @@ import {
 const ApagarUsuarioDialog = ({ onDelete }: { onDelete: () => void }) => {
   return (
     <AlertDialog>
-      <AlertDialogTrigger>Excluir</AlertDialogTrigger>
+      <AlertDialogTrigger style={{ color: "white" }}>
+        Excluir
+      </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>

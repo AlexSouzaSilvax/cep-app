@@ -46,7 +46,7 @@ const UserList = ({ data }: { data: IUsuarios[] }) => {
 
   return (
     <>
-      <UserForm userToEdit={userToEdit} isEdit={true} />
+      <UserForm userToEdit={userToEdit} isEdit={true} onCloseForm={() => setUserToEdit(undefined)}/>
       <Table className="w-full table-auto">
         <TableHeader>
           <TableRow>
