@@ -18,7 +18,6 @@ const UserList = ({ data }: { data: IUsuarios[] }) => {
   const { mutate } = useDeleteUserMutation();
 
   const handleDelete = (id: number | undefined) => {
-
     if (id === undefined) {
       toast({
         title: "Erro",
@@ -37,8 +36,9 @@ const UserList = ({ data }: { data: IUsuarios[] }) => {
       onError: (error: unknown) => {
         console.error("Erro ao apagar usuário:", error);
         toast({
-          title: "Erro ao apagar o usuário",
-          description: "",
+          title: "Usuário",
+          description: "Problema ao apagar o usuário.",
+          variant: "destructive",
         });
       },
     });
@@ -46,7 +46,11 @@ const UserList = ({ data }: { data: IUsuarios[] }) => {
 
   return (
     <>
-      <UserForm userToEdit={userToEdit} isEdit={true} onCloseForm={() => setUserToEdit(undefined)}/>
+      <UserForm
+        userToEdit={userToEdit}
+        isEdit={true}
+        onCloseForm={() => setUserToEdit(undefined)}
+      />
       <Table className="w-full table-auto">
         <TableHeader>
           <TableRow>
@@ -55,7 +59,7 @@ const UserList = ({ data }: { data: IUsuarios[] }) => {
             <TableHead className="hidden sm:table-cell w-[383px] break-words whitespace-normal">
               Endereço
             </TableHead>
-            <TableHead className="sm:w-auto">Ações</TableHead>
+            <TableHead className="w-[10px]">Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

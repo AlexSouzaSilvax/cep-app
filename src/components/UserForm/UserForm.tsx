@@ -27,12 +27,19 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 import IUsuarios from "@/interfaces/IUsuarios.interface";
 import { formatarCPF } from "@/services/formatarCPF";
+import { isMobile } from "@/services/isMobile";
 import { isValidCPF } from "@/services/validarCPF";
 import { useEffect, useState } from "react";
 
 const FormSchema = z.object({
   id: z.number().optional(),
-  nome: z.string().nonempty("NOME é obrigatório"),
+  nome: z
+    .string()
+    .nonempty("NOME é obrigatório")
+    .regex(
+      /^(?! )[a-zA-Z\u00C0-\u00FF]{2,}(?: [a-zA-Z\u00C0-\u00FF]+)*$/,
+      "NOME está inválido."
+    ),
   cpf: z
     .string()
     .nonempty("CPF é obrigatório")
@@ -158,11 +165,12 @@ const UserForm = ({
 
     if (userToEdit) {
       endereco = { ...endereco, id: userToEdit.id };
-    }
-    if (isCpfTaken) {
-      callToast("CPF", "O CPF já está registrado.", "destructive");
-      changeBtnSalvar();
-      return;
+    } else {
+      if (isCpfTaken) {
+        callToast("CPF", "O CPF já está registrado.", "destructive");
+        changeBtnSalvar();
+        return;
+      }
     }
     if (isCepEncontrado) {
       callToast("CEP", "Por favor, informe um cep válido.", "destructive");
@@ -235,7 +243,10 @@ const UserForm = ({
       )}
 
       <SheetContent
-        side={"right"}
+        className={`flex flex-col overflow-y-auto ${
+          isMobile ? "h-screen w-screen" : "max-h-screen"
+        }`}
+        side={isMobile ? "top" : "right"}
         onCloseAutoFocus={() => {
           form.reset();
           onCloseForm();
@@ -264,6 +275,19 @@ const UserForm = ({
                         placeholder="seu nome"
                         {...field}
                         autoFocus={!isEdit}
+                        onInput={(e) => {
+                          const input = e.target as HTMLInputElement;
+
+                          input.value = input.value.replace(
+                            /[^a-zA-Z\u00C0-\u00FF ]/g,
+                            ""
+                          );
+                          input.value = input.value.replace(/\b\w/g, (letra) =>
+                            letra.toUpperCase()
+                          );
+
+                          field.onChange(input.value.trimStart());
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
