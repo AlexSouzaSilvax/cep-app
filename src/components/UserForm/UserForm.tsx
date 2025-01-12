@@ -164,7 +164,7 @@ const UserForm = ({
           (userToEdit ? "Atualizado" : "Salvo") + " com sucesso",
           endereco.nome + " " + formatarCPF(endereco.cpf),
           "default"
-        );  
+        );
         form.reset();
         changeBtnSalvar();
         setIsOpen(!isOpen);
@@ -222,7 +222,13 @@ const UserForm = ({
         <></>
       )}
 
-      <SheetContent side={"right"} onCloseAutoFocus={onCloseForm}>
+      <SheetContent
+        side={"right"}
+        onCloseAutoFocus={() => {
+          form.reset();
+          onCloseForm();
+        }}
+      >
         <SheetClose asChild></SheetClose>
 
         <SheetHeader>
