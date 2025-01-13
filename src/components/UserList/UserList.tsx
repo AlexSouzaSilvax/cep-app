@@ -16,7 +16,9 @@ const UserList = ({ data }: { data: IUsuarios[] }) => {
   const [userToEdit, setUserToEdit] = useState<IUsuarios>();
 
   const { mutate } = useDeleteUserMutation();
-  
+
+  const [idUsuarioDelete, setIdUsuarioDelete] = useState<number>();
+
   const handleDelete = (id: number | undefined) => {
     if (id === undefined) {
       callToast(
@@ -27,6 +29,8 @@ const UserList = ({ data }: { data: IUsuarios[] }) => {
       return;
     }
 
+    setIdUsuarioDelete(id);
+
     mutate(id, {
       onSuccess: () => {
         callToast("Usuário apagado com sucesso", "", "default");
@@ -35,6 +39,8 @@ const UserList = ({ data }: { data: IUsuarios[] }) => {
         callToast("Usuário", "Problema ao apagar o usuário.", "destructive");
       },
     });
+
+    setIdUsuarioDelete(undefined);
   };
 
   return (
@@ -62,6 +68,7 @@ const UserList = ({ data }: { data: IUsuarios[] }) => {
               usuario={usuario}
               onEdit={() => setUserToEdit(usuario)}
               onDelete={() => handleDelete(usuario.id)}
+              isLoadingDelete={usuario.id == idUsuarioDelete ? true : false}
             />
           ))}
         </TableBody>
