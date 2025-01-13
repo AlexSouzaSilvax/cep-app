@@ -6,8 +6,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { toast } from "@/hooks/use-toast";
 import IUsuarios from "@/interfaces/IUsuarios.interface";
+import { callToast } from "@/services/callToast";
 import { useState } from "react";
 import UserForm from "../UserForm/UserForm";
 import UserItem from "./UserItem";
@@ -16,30 +16,23 @@ const UserList = ({ data }: { data: IUsuarios[] }) => {
   const [userToEdit, setUserToEdit] = useState<IUsuarios>();
 
   const { mutate } = useDeleteUserMutation();
-
+  
   const handleDelete = (id: number | undefined) => {
     if (id === undefined) {
-      toast({
-        title: "Erro",
-        description: "ID não encontrado",
-      });
+      callToast(
+        "Usuário",
+        "Usuário não encontrado para ser excluído.",
+        "destructive"
+      );
       return;
     }
 
     mutate(id, {
       onSuccess: () => {
-        toast({
-          title: "Usuário apagado com sucesso",
-          description: "",
-        });
+        callToast("Usuário apagado com sucesso", "", "default");
       },
-      onError: (error: unknown) => {
-        console.error("Erro ao apagar usuário:", error);
-        toast({
-          title: "Usuário",
-          description: "Problema ao apagar o usuário.",
-          variant: "destructive",
-        });
+      onError: () => {
+        callToast("Usuário", "Problema ao apagar o usuário.", "destructive");
       },
     });
   };

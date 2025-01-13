@@ -24,8 +24,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { toast } from "@/hooks/use-toast";
 import IUsuarios from "@/interfaces/IUsuarios.interface";
+import { callToast } from "@/services/callToast";
 import { formatarCPF } from "@/services/formatarCPF";
 import { isMobile } from "@/services/isMobile";
 import { isValidCPF } from "@/services/validarCPF";
@@ -206,18 +206,6 @@ const UserForm = ({
   const changeBtnSalvar = () => {
     setTxtBtnSalvar("Salvar");
     setLoadingSalvar(false);
-  };
-
-  const callToast = (
-    title: string,
-    description: string,
-    variant: "default" | "destructive" | null | undefined
-  ) => {
-    toast({
-      title: title,
-      description: description,
-      variant: variant,
-    });
   };
 
   const limpaEnderecoForm = () => {
